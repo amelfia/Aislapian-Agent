@@ -1,35 +1,40 @@
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 import argparse
 
 
 def main():
-    load_dotenv()
-    print("Hello from aislupain!")
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if api_key is None:
-        raise RuntimeError("the api key is not set yet")
-
     parser = argparse.ArgumentParser(description="Chatbot")
-    parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument("user_prompt", type=str, help="Prompt to send to Gemini")
+    parser.add_argument("--verbose", action= "store_true", help="Enable verbose output")
+
     args = parser.parse_args()
+
+    user_messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
+
+
+    load_dotenv()
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError("the api key is not set yet")
 
 
     client = genai.Client(api_key=api_key)
-    response = client.models.generate_content(model='gemini-2.5-flash',contents=f"{args.user_prompt}")
+    response = client.models.generate_content(model='gemini-2.5-flash', contents=user_messages)
 
-    meta_data = response.usage_metadata
-    prompt_count = meta_data.prompt_token_count
-    can_token_count = meta_data.candidates_token_count
 
-    if prompt_count is None and can_token_count is None:
-        raise RuntimeError("API call failed")
-    print(f"")
-    print(f"Prompt tokens: {prompt_count}")
-    print(f"Response tokens: {can_token_count}")
-    print(f"Response:")
-    print(response.text)
+    if not response.usage_metadata:
+        raise RuntimeError("Gemini's call failed")
+
+    if args.verbose is True:
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+        print(response.text)
+    else:
+        print(response.text)
 
 
 

@@ -1,5 +1,6 @@
 import os
 import subprocess
+from google.genai import types
 
 def run_python_file(working_directory, file_path, args=None):
     try:
@@ -40,7 +41,30 @@ def run_python_file(working_directory, file_path, args=None):
         return f'Error: executing Python file: {E}'
 
 
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs a Python file in a specific directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        required=["file_path"],
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description= "File path to run the file from, relative to the working directory (default is the working directory)"),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items= types.Schema(type=types.Type.STRING),
+                description="Optional arguments that can be passed to be ran",
 
+
+
+
+
+            ),
+        },
+
+    ),
+)
 
 
 

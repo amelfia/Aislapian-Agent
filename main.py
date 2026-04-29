@@ -1,9 +1,14 @@
 import os
 import argparse
+from prompts import system_prompt
+from functions.call_function import available_functions
+
+
 
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+
 
 
 def main():
@@ -26,16 +31,30 @@ def main():
 
 def gen_content(client, user_messages, verbose):
     response = client.models.generate_content(
-    model='gemini-2.5-flash', contents=user_messages
-    )
+        model='gemini-2.5-flash',
+        contents=user_messages,
+        config=types.GenerateContentConfig(
+            tools=[available_functions],
+            system_instruction=system_prompt,
+            temperature=0
+        ))
+
     if not response.usage_metadata:
         raise RuntimeError("Gemini API appears to have failed!")
 
     if verbose:
         print("Prompt tokens:", response.usage_metadata.prompt_token_count)
         print("Response tokens:", response.usage_metadata.candidates_token_count)
-    print("Response:")
-    print(response.text)
+
+
+    func_object_gen = response.function_calls
+    if func_object_gen == None:
+        print("Response:")
+        print(response.text)
+
+    for func in func_object_gen:
+        print(f"Calling function: {func.name}({func.args})")
+
 
 
 

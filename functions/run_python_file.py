@@ -1,5 +1,6 @@
 import os
 import subprocess
+
 from google.genai import types
 
 def run_python_file(working_directory, file_path, args=None):
@@ -8,6 +9,7 @@ def run_python_file(working_directory, file_path, args=None):
         file_path_abs = os.path.normpath(os.path.join(working_directory_abs, file_path))
         if os.path.commonpath([working_directory_abs, file_path_abs]) != working_directory_abs:
             return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
+
         if not os.path.isfile(file_path_abs):
             return f'Error: "{file_path}" does not exist or is not a regular file'
 
@@ -18,23 +20,22 @@ def run_python_file(working_directory, file_path, args=None):
         if args:
             command.extend(args)
 
-        comp_proc = subprocess.run(
+        results = subprocess.run(
             command,
             cwd=working_directory_abs,
             capture_output=True,
             text=True,
             timeout=30,
         )
-        
         output = []
-        if comp_proc.returncode != 0:
-            output.append(f"Process exited with {comp_proc.returncode}")
-        if not comp_proc.stderr and not comp_proc.stdout:
+        if results.returncode != 0:
+            output.append(f"Process exited with {results.returncode}")
+        if not results.stderr and not results.stdout:
             output.append("No output produced")
-        if comp_proc.stderr:
-            output.append(f"STDERR:\n{comp_proc.stderr}")
-        if comp_proc.stdout:
-            output.append(f"STDOUT:\n{comp_proc.stdout}")
+        if results.stderr:
+            output.append(f"STDERR:\n{results.stderr}")
+        if results.stdout:
+            output.append(f"STDOUT:\n{results.stdout}")
         return "\n".join(output)
 
     except Exception as E:
@@ -43,26 +44,23 @@ def run_python_file(working_directory, file_path, args=None):
 
 schema_run_python_file = types.FunctionDeclaration(
     name="run_python_file",
-    description="Runs a Python file in a specific directory",
+    description="Executes a specified Python file within the working directory and returns its output",
     parameters=types.Schema(
         type=types.Type.OBJECT,
-        required=["file_path"],
         properties={
             "file_path": types.Schema(
                 type=types.Type.STRING,
-                description= "File path to run the file from, relative to the working directory (default is the working directory)"),
+                description="Path to the Python file to run, relative to the working directory",
+            ),
             "args": types.Schema(
                 type=types.Type.ARRAY,
-                items= types.Schema(type=types.Type.STRING),
-                description="Optional arguments that can be passed to be ran",
-
-
-
-
-
+                items=types.Schema(
+                    type=types.Type.STRING,
+                ),
+                description="Optional list of arguments to pass to the Python script",
             ),
         },
-
+        required=["file_path"],
     ),
 )
 

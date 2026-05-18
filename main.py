@@ -42,14 +42,14 @@ def main():
     sys.exit(1)
 
 
+
 def gen_content(client, messages, verbose):
     response = client.models.generate_content(
         model='gemini-2.5-flash',
         contents=messages,
         config=types.GenerateContentConfig(
             tools=[available_functions],
-            system_instruction=system_prompt,
-            temperature=0
+            system_instruction=system_prompt
         ),
     )
     if not response.usage_metadata:
@@ -80,8 +80,6 @@ def gen_content(client, messages, verbose):
         function_responses.append(result.parts[0])
 
     messages.append(types.Content(role="user", parts=function_responses))
-
-
 
 
 if __name__ == "__main__":

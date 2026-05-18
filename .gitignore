@@ -9,3 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+
+family_poem.txt
+PyWhatKit_DB.txt

@@ -6,8 +6,9 @@ from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_file_content, get_file_content
 from functions.run_python_file import schema_run_python_file, run_python_file
 from functions.write_file import schema_write_file, write_file
+
 from functions.send_whatsapp_to_person import schema_send_whatsapp_to_person, send_whatsapp_to_person
-from functions.send_whatsapp_to_group import schema_send_whatssapp_to_group, send_whatsapp_to_group
+from functions.send_whatsapp_to_group import schema_send_whatsapp_to_group, send_whatsapp_to_group
 
 available_functions = types.Tool(
     function_declarations=[schema_get_files_info,
@@ -15,7 +16,7 @@ available_functions = types.Tool(
                            schema_run_python_file,
                            schema_write_file,
                            schema_send_whatsapp_to_person,
-                           schema_send_whatssapp_to_group]
+                           schema_send_whatsapp_to_group]
 )
 
 function_map = {

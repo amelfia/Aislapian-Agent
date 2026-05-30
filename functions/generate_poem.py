@@ -1,27 +1,29 @@
 from dotenv import load_dotenv
-from googl.genai import types
+from google.genai import types
 from google import genai
 
-def generate_poem(client, name, tone, style):
-    poem_prompt = f"Write a {tone} {style} poem for {name}"
 
+def build_poem_prompt(name, tone, style):
+    return f"Write a {tone} {style} poem for {name} under 8 lines."
+
+def generate_poem(client, name, tone, style):
+    poem_prompt = build_poem_prompt(name, tone, style)
     poet_system_prompt = f"""You are a gifted poet.
     Write a {style} poem.
     The tone should be {tone}.
     It is for someone named {name}.
     Keep it under 8 lines"""
 
-    client = genai.Client(api_key=api_key)
     poem_contents = [types.Content(role="user", parts=[types.Part(text=poem_prompt)])]
 
-    response = client.mdoels.generate_content(
+    response = client.models.generate_content(
         model='gemini-2.5-flash',
-        contents=[poem_contents],
-        config=types.GenerateContentConfig(system_instructions=poet_system_prompt)
+        contents=poem_contents,
+        config=types.GenerateContentConfig(system_instruction=poet_system_prompt)
 
     )
 
-    return response.txt
+    return response.text
 
 schema_get_file_content = types.FunctionDeclaration(
     name="generate_poem",

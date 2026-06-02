@@ -16,6 +16,8 @@ You can perform the following operations:
 - Write or overwrite files
 - Send text to whatsapp contacts
 - Send text to a whatsapp group
+- Generate poems 
+- Send Generated poems to whatsapp contacts and whatsapp groups
 
 All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security.
 

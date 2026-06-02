@@ -68,7 +68,7 @@ def gen_content(client, messages, verbose):
 
     function_responses = []
     for function_call in response.function_calls:
-        result = call_function(function_call, verbose)
+        result = call_function(function_call, client, verbose)
         if (
             not result.parts
             or not result.parts[0].function_response

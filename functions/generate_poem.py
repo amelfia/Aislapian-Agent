@@ -25,7 +25,7 @@ def generate_poem(client, name, tone, style):
 
     return response.text
 
-schema_get_file_content = types.FunctionDeclaration(
+schema_generate_poem = types.FunctionDeclaration(
     name="generate_poem",
     description="Generates a poem towards a specific name, with specifiying the tone and the style of the poem with the maxiumum of 8 lines",
     parameters=types.Schema(

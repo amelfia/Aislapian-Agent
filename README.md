@@ -1,4 +1,4 @@
-# Aislapian_Agent
+# Aislapian
 
 A command-line AI agent built in Python using Google's Gemini API. It explores
 codebases, reads and writes files, runs scripts, and iterates in a feedback
